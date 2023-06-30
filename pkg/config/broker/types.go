@@ -69,7 +69,8 @@ func (d *DeliveryOptions) Validate(ctx context.Context) (errs *apis.FieldError) 
 }
 
 type Target struct {
-	URL *string `json:"url,,omitempty"`
+	URL  *string `json:"url,,omitempty"`
+	Path *string `json:"path,omitempty"`
 	// Deprecated, use the trigger's Delivery options instead.
 	DeliveryOptions *DeliveryOptions `json:"deliveryOptions,omitempty"`
 }
@@ -84,6 +85,16 @@ func (i *Target) Validate(ctx context.Context) (errs *apis.FieldError) {
 			errs = errs.Also(&apis.FieldError{
 				Message: "Target URL cannot be parsed",
 				Paths:   []string{"url"},
+				Details: err.Error(),
+			})
+		}
+	}
+
+	if i.Path != nil && *i.Path != "" {
+		if _, err := url.Parse(*i.Path); err != nil {
+			errs = errs.Also(&apis.FieldError{
+				Message: "Target Path cannot be parsed",
+				Paths:   []string{"path"},
 				Details: err.Error(),
 			})
 		}

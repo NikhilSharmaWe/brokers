@@ -49,6 +49,9 @@ func (s *subscriber) updateTrigger(trigger cfgbroker.Trigger) error {
 	url := ""
 	if trigger.Target.URL != nil {
 		url = *trigger.Target.URL
+		if trigger.Target.Path != nil && *trigger.Target.Path != "" {
+			url += *trigger.Target.Path
+		}
 	}
 	ctx := cloudevents.ContextWithTarget(s.parentCtx, url)
 
